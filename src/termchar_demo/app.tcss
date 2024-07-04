@@ -1,0 +1,9 @@
+Client, Server {
+    border: solid $primary;
+}
+
+#input-buffer {
+    border: solid $accent;
+    width: 100%;
+    height: 3;
+}
