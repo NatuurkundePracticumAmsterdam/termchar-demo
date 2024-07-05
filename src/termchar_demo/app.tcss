@@ -1,9 +1,17 @@
 Client, Server {
-    border: solid $primary;
+    border: solid $accent;
 }
 
 #input-buffer {
-    border: solid $accent;
+    border: solid $primary;
     width: 100%;
     height: 3;
+}
+
+#log {
+    border: solid $primary;
+}
+
+#output:focus {
+    border: tall $secondary;
 }
