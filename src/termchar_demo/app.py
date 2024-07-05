@@ -16,15 +16,20 @@ class Device(Container):
     def compose(self) -> ComposeResult:
         with Vertical(id="container"):
             yield Input(placeholder="Send characters", id="output")
+            yield (input := Input(id="write-termchars"))
+            input.border_title = "Write Termination Characters"
             yield (log := RichLog(id="log"))
             log.border_title = "Application Log"
             yield (label := Label(id="input-buffer"))
             label.border_title = "Input Buffer"
+            yield (input := Input(id="read-termchars"))
+            input.border_title = "Read Termination Characters"
 
     @on(Input.Submitted)
     def send_data(self, event: Input.Submitted) -> None:
-        self.post_message(self.SendData(event.input.value))
-        self.query_one(Input).clear()
+        termchars: Input = self.query_one("#write-termchars").value
+        self.post_message(self.SendData(event.input.value + termchars))
+        event.input.clear()
 
 
 class Client(Device):
@@ -48,7 +53,7 @@ class TermCharDemo(App[None]):
     @on(Client.SendData)
     def send_to_server(self, event: Client.SendData) -> None:
         buffer: Label = self.query_one(Server).query_one("#input-buffer")
-        buffer.update(repr(event.data))
+        buffer.update(event.data)
 
 
 TermCharDemo().run()

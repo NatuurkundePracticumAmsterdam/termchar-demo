@@ -1,17 +1,31 @@
 Client, Server {
     border: solid $accent;
+    border-title-color: $text;
+    border-title-style: bold;
 }
 
 #input-buffer {
     border: solid $primary;
+    border-title-color: $accent-lighten-3;
     width: 100%;
     height: 3;
 }
 
 #log {
     border: solid $primary;
+    border-title-color: $accent-lighten-3;
 }
 
 #output:focus {
     border: tall $secondary;
+}
+
+#read-termchars, #write-termchars {
+    border: round $primary;
+    border-title-color: $accent-lighten-3;
+
+    &:focus {
+        border: round $secondary;
+        border-title-color: $secondary;
+    }
 }
