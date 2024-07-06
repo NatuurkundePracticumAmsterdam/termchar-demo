@@ -1,8 +1,9 @@
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.events import Event
+from textual.events import DescendantBlur, Event
 from textual.reactive import reactive
+from textual.validation import Integer
 from textual.widgets import Button, Footer, Header, Input, Label, RichLog
 
 
@@ -20,6 +21,7 @@ class Buffer(Label):
 
 class Device(Container):
     is_busy_read = reactive(False)
+    timeout: int = 2
 
     class DataOut(Event):
         def __init__(self, data: str) -> None:
@@ -45,8 +47,22 @@ class Device(Container):
             yield (label := Buffer(id="input-buffer"))
             label.border_title = "Input Buffer"
             with Horizontal():
-                yield (input := Input(id="read-termchars"))
+                yield (
+                    input := Input(
+                        placeholder="Type termination characters here...",
+                        id="read-termchars",
+                    )
+                )
                 input.border_title = "Read Termination Characters"
+                yield (
+                    input := Input(
+                        value=str(self.timeout),
+                        id="timeout",
+                        restrict="[0-9]*",
+                        validators=Integer(minimum=0),
+                    )
+                )
+                input.border_title = "Timeout"
                 yield Button("Read", id="read-button", variant="primary")
 
     def watch_is_busy_read(self, is_busy_read: bool) -> None:
@@ -60,6 +76,14 @@ class Device(Container):
             output.disabled = False
             output.placeholder = "Type here to send data"
             output.remove_class("busy")
+
+    @on(Input.Submitted, "#timeout")
+    @on(DescendantBlur, "#timeout")
+    def set_timeout(self) -> None:
+        widget: Input
+        if not (widget := self.query_one("#timeout")).is_valid:
+            widget.value = "0"
+        self.timeout = int(widget.value)
 
     @on(Input.Submitted)
     @on(Button.Pressed, "#write-button")

@@ -13,6 +13,13 @@ Client, Server {
     border-title-color: $accent-lighten-3;
     width: 100%;
     height: 3;
+    hatch: horizontal $success 60%;
+    &.almost-full {
+        hatch: left $warning 80%;
+    }
+    &.full {
+        hatch: cross $error 80%;
+    }
 }
 
 #log {
@@ -32,7 +39,7 @@ Client, Server {
     }
 }
 
-#read-termchars, #write-termchars {
+#read-termchars, #write-termchars, #timeout {
     width: 1fr;
     border: round $primary;
     border-title-color: $accent-lighten-3;
@@ -40,5 +47,18 @@ Client, Server {
     &:focus {
         border: round $secondary;
         border-title-color: $secondary;
+    }
+}
+
+#timeout {
+    width: 13;
+    &.-valid:focus {
+        border: round $success;
+    }
+    &.-invalid {
+        border: round $error 60%;
+    }
+    &.-invalid:focus {
+        border: round $error;
     }
 }
