@@ -3,7 +3,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.events import Event
 from textual.reactive import reactive
-from textual.widgets import Footer, Header, Input, Label, RichLog
+from textual.widgets import Button, Footer, Header, Input, Label, RichLog
 
 
 class Buffer(Label):
@@ -36,14 +36,18 @@ class Device(Container):
     def compose(self) -> ComposeResult:
         with Vertical(id="container"):
             yield Input(id="output")
-            yield (input := Input(id="write-termchars"))
-            input.border_title = "Write Termination Characters"
+            with Horizontal():
+                yield (input := Input(id="write-termchars"))
+                input.border_title = "Write Termination Characters"
+                yield Button("Write", id="write-button", variant="primary")
             yield (log := RichLog(id="log", markup=True))
             log.border_title = "Application Log"
             yield (label := Buffer(id="input-buffer"))
             label.border_title = "Input Buffer"
-            yield (input := Input(id="read-termchars"))
-            input.border_title = "Read Termination Characters"
+            with Horizontal():
+                yield (input := Input(id="read-termchars"))
+                input.border_title = "Read Termination Characters"
+                yield Button("Read", id="read-button", variant="primary")
 
     def watch_is_busy_read(self, is_busy_read: bool) -> None:
         if is_busy_read:
@@ -58,14 +62,17 @@ class Device(Container):
             output.remove_class("busy")
 
     @on(Input.Submitted)
-    def send_data(self, event: Input.Submitted) -> None:
+    @on(Button.Pressed, "#write-button")
+    def send_data(self) -> None:
         termchars: Input = self.query_one("#write-termchars").value
-        self.post_message(self.SendData(event.input.value + termchars))
-        event.input.clear()
+        output: Input = self.query_one("#output")
+        self.post_message(self.SendData(output.value + termchars))
+        output.clear()
 
     @on(SendData)
     def log_write(self, event: SendData) -> None:
-        self.query_one("#log").write(f"[purple4]> Sent {event.data}")
+        self.query_one("#log").write(f"[light_steel_blue1]> Sent {event.data}")
+        # dark_olive_green1
 
     @on(NewData)
     def fill_buffer(self, event: NewData) -> None:
@@ -79,9 +86,6 @@ class Client(Device):
 
 class Server(Device):
     BORDER_TITLE: str = "Server"
-
-    def on_mount(self) -> None:
-        self.is_busy_read = True
 
 
 class TermCharDemo(App[None]):

@@ -2,6 +2,10 @@ Client, Server {
     border: solid $accent;
     border-title-color: $text;
     border-title-style: bold;
+
+    & Horizontal {
+        height: auto;
+    }
 }
 
 #input-buffer {
@@ -29,6 +33,7 @@ Client, Server {
 }
 
 #read-termchars, #write-termchars {
+    width: 1fr;
     border: round $primary;
     border-title-color: $accent-lighten-3;
 
