@@ -102,7 +102,7 @@ class Device(Container):
 
     @on(DataOut)
     def log_write(self, event: DataOut) -> None:
-        self.query_one("#log").write(f"[light_steel_blue1]> Sent {event.data}")
+        self.query_one("#log").write(f'[light_steel_blue1]> Write → "{event.data}"')
         # dark_olive_green1
 
     @on(DataIn)
