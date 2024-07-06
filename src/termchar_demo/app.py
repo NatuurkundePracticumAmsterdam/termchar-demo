@@ -10,7 +10,7 @@ from textual.widgets import Button, Footer, Header, Input, Label, RichLog
 class Buffer(Label):
     data: str
 
-    def __init__(self, data: str = "", length: int = 20, *args, **kwargs) -> None:
+    def __init__(self, data: str = "", length: int = 30, *args, **kwargs) -> None:
         super().__init__(data, *args, **kwargs)
         self.data = data
         self.length = length
