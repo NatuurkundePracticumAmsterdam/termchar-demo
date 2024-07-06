@@ -21,12 +21,12 @@ class Buffer(Label):
 class Device(Container):
     is_busy_read = reactive(False)
 
-    class SendData(Event):
+    class DataOut(Event):
         def __init__(self, data: str) -> None:
             super().__init__()
             self.data = data
 
-    class NewData(Event):
+    class DataIn(Event):
         def __init__(self, data: str) -> None:
             super().__init__()
             self.data = data
@@ -66,16 +66,16 @@ class Device(Container):
     def send_data(self) -> None:
         termchars: Input = self.query_one("#write-termchars").value
         output: Input = self.query_one("#output")
-        self.post_message(self.SendData(output.value + termchars))
+        self.post_message(self.DataOut(output.value + termchars))
         output.clear()
 
-    @on(SendData)
-    def log_write(self, event: SendData) -> None:
+    @on(DataOut)
+    def log_write(self, event: DataOut) -> None:
         self.query_one("#log").write(f"[light_steel_blue1]> Sent {event.data}")
         # dark_olive_green1
 
-    @on(NewData)
-    def fill_buffer(self, event: NewData) -> None:
+    @on(DataIn)
+    def fill_buffer(self, event: DataIn) -> None:
         buffer: Buffer = self.query_one("#input-buffer")
         buffer.append(event.data)
 
@@ -98,9 +98,9 @@ class TermCharDemo(App[None]):
             yield Client()
             yield Server()
 
-    @on(Client.SendData)
-    def send_to_server(self, event: Client.SendData) -> None:
-        self.query_one(Server).post_message(Server.NewData(event.data))
+    @on(Client.DataOut)
+    def send_to_server(self, event: Client.DataOut) -> None:
+        self.query_one(Server).post_message(Server.DataIn(event.data))
 
 
 app = TermCharDemo
