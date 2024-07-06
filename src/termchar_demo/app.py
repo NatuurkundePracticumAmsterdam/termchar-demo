@@ -48,31 +48,29 @@ class Device(Container):
         with Vertical(id="container"):
             yield Input(id="output")
             with Horizontal():
-                yield (input := Input(id="write-termchars"))
-                input.border_title = "Write Termination Characters"
+                yield Input(id="write-termchars")
                 yield Button("Write", id="write-button", variant="primary")
-            yield (log := RichLog(id="log", markup=True))
-            log.border_title = "Application Log"
-            yield (label := Buffer(id="input-buffer"))
-            label.border_title = "Input Buffer"
+            yield RichLog(id="log", markup=True)
+            yield Buffer(id="input-buffer")
             with Horizontal():
-                yield (
-                    input := Input(
-                        placeholder="Type termination characters here...",
-                        id="read-termchars",
-                    )
+                yield Input(
+                    placeholder="Type termination characters here...",
+                    id="read-termchars",
                 )
-                input.border_title = "Read Termination Characters"
-                yield (
-                    input := Input(
-                        value=str(self.timeout),
-                        id="timeout",
-                        restrict="[0-9]*",
-                        validators=Integer(minimum=0),
-                    )
+                yield Input(
+                    value=str(self.timeout),
+                    id="timeout",
+                    restrict="[0-9]*",
+                    validators=Integer(minimum=0),
                 )
-                input.border_title = "Timeout"
                 yield Button("Read", id="read-button", variant="primary")
+
+    def on_mount(self) -> None:
+        self.query_one("#write-termchars").border_title = "Write Termination Characters"
+        self.query_one("#log").border_title = "Application Log"
+        self.query_one("#input-buffer").border_title = "Input Buffer"
+        self.query_one("#read-termchars").border_title = "Read Termination Characters"
+        self.query_one("#timeout").border_title = "Timeout"
 
     def watch_is_busy_read(self, is_busy_read: bool) -> None:
         if is_busy_read:
