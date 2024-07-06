@@ -10,13 +10,22 @@ from textual.widgets import Button, Footer, Header, Input, Label, RichLog
 class Buffer(Label):
     data: str
 
-    def __init__(self, data: str = "", *args, **kwargs) -> None:
+    def __init__(self, data: str = "", length: int = 20, *args, **kwargs) -> None:
         super().__init__(data, *args, **kwargs)
         self.data = data
+        self.length = length
+        self.styles.max_width = self.length + 2
 
     def append(self, new_data: str) -> None:
-        self.data += new_data
+        self.data = (self.data + new_data)[: self.length]
         self.update(self.data)
+        fill_factor = len(self.data) / self.length
+        if fill_factor >= 0.8:
+            self.set_classes("full")
+        elif fill_factor >= 0.6:
+            self.set_classes("almost-full")
+        else:
+            self.set_classes("")
 
 
 class Device(Container):

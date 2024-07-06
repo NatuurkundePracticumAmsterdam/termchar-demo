@@ -15,10 +15,10 @@ Client, Server {
     height: 3;
     hatch: horizontal $success 60%;
     &.almost-full {
-        hatch: left $warning 80%;
+        hatch: horizontal $warning 80%;
     }
     &.full {
-        hatch: cross $error 80%;
+        hatch: horizontal $error 80%;
     }
 }
 
