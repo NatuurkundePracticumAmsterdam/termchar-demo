@@ -20,6 +20,14 @@ Client, Server {
     border: tall $secondary;
 }
 
+#output.busy {
+    opacity: 100%;
+    & .input--placeholder {
+        color: $secondary;
+        text-style: bold;
+    }
+}
+
 #read-termchars, #write-termchars {
     border: round $primary;
     border-title-color: $accent-lighten-3;
