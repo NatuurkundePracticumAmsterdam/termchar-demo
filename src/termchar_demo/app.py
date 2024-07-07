@@ -133,7 +133,7 @@ class Device(Container):
             widget.value = "0"
         self.timeout = int(widget.value)
 
-    @on(Input.Submitted)
+    @on(Input.Submitted, "#output")
     @on(Button.Pressed, "#write-button")
     def write(self) -> None:
         termchars: Input = self.query_one("#write-termchars").value
