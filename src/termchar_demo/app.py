@@ -102,7 +102,6 @@ class Device(Container):
     def watch_is_busy_reading(self, is_busy_read: bool) -> None:
         def unlock_read():
             self.is_busy_reading = False
-            print(20 * "*" + "TRING")
 
         if is_busy_read:
             output: Input = self.query_one("#output")
@@ -148,6 +147,7 @@ class Device(Container):
         msg = self.query_one("#input-buffer").read(termchars=termchars)
         if msg is not None:
             self.post_message(self.MessageRead(msg))
+            self.is_busy_reading = False
         else:
             self.is_busy_reading = True
 
@@ -158,12 +158,13 @@ class Device(Container):
     @on(DataOut)
     def log_write(self, event: DataOut) -> None:
         self.query_one("#log").write(f'[light_steel_blue1]> Write → "{event.data}"')
-        # dark_olive_green1
 
     @on(DataIn)
     def fill_buffer(self, event: DataIn) -> None:
         buffer: Buffer = self.query_one("#input-buffer")
         buffer.append(event.data)
+        if self.is_busy_reading:
+            self.read()
 
 
 class Client(Device):
