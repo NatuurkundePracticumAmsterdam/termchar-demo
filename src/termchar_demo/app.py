@@ -66,9 +66,10 @@ class Device(Container):
             self.msg = msg
 
     BORDER_TITLE: str = "Device"
+    TIMEOUT = 2
 
     is_busy_reading = reactive(False)
-    timeout: int = 2
+    timeout: int
     timeout_timer: Timer | None = None
 
     def compose(self) -> ComposeResult:
@@ -85,7 +86,7 @@ class Device(Container):
                     id="read-termchars",
                 )
                 yield Input(
-                    value=str(self.timeout),
+                    value=str(self.TIMEOUT),
                     id="timeout",
                     restrict="[0-9]*",
                     validators=Integer(minimum=0),
@@ -98,6 +99,7 @@ class Device(Container):
         self.query_one("#input-buffer").border_title = "Input Buffer"
         self.query_one("#read-termchars").border_title = "Read Termination Characters"
         self.query_one("#timeout").border_title = "Timeout"
+        self.timeout = self.TIMEOUT
 
     def watch_is_busy_reading(self, is_busy_read: bool) -> None:
         def unlock_read():
@@ -173,6 +175,13 @@ class Client(Device):
 
 class Server(Device):
     BORDER_TITLE: str = "Server"
+    TIMEOUT = 0
+
+    def on_mount(self) -> None:
+        super().on_mount()
+        self.query_one("#read-termchars").value = r"\n"
+        self.query_one("#write-termchars").value = r"\n\r"
+        self.is_busy_reading = True
 
 
 class TermCharDemo(App[None]):
