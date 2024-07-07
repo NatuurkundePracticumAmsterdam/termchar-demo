@@ -23,6 +23,9 @@ class Buffer(Label):
     def append(self, new_data: str) -> None:
         self.data = (self.data + new_data)[: self.length]
 
+    def clear(self) -> None:
+        self.data = ""
+
     def watch_data(self):
         fill_factor = len(self.data) / self.length
         if fill_factor >= 0.8:
@@ -79,7 +82,9 @@ class Device(Container):
                 yield Input(id="write-termchars")
                 yield Button("Write", id="write-button", variant="primary")
             yield RichLog(id="log", markup=True)
-            yield Buffer(id="input-buffer")
+            with Horizontal():
+                yield Buffer(id="input-buffer")
+                yield Button("Clear", id="clear-button", variant="primary")
             with Horizontal():
                 yield Input(
                     placeholder="Type termination characters here...",
@@ -152,6 +157,10 @@ class Device(Container):
             self.is_busy_reading = False
         else:
             self.is_busy_reading = True
+
+    @on(Button.Pressed, "#clear-button")
+    def clear_buffer(self) -> None:
+        self.query_one("#input-buffer").clear()
 
     @on(MessageRead)
     def log_read(self, event: MessageRead) -> None:
