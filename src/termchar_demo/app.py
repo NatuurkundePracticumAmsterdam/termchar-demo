@@ -50,9 +50,10 @@ class Buffer(Label):
 
 class Device(Container):
     class DataOut(Event):
-        def __init__(self, data: str) -> None:
+        def __init__(self, data: str, sender: "Device") -> None:
             super().__init__()
             self.data = data
+            self.sender = sender
 
     class DataIn(Event):
         def __init__(self, data: str) -> None:
@@ -138,7 +139,7 @@ class Device(Container):
     def write(self) -> None:
         termchars: Input = self.query_one("#write-termchars").value
         output: Input = self.query_one("#output")
-        self.post_message(self.DataOut(output.value + termchars))
+        self.post_message(self.DataOut(output.value + termchars, sender=self))
         output.clear()
 
     @on(Button.Pressed, "#read-button")
@@ -183,9 +184,13 @@ class TermCharDemo(App[None]):
             yield Client()
             yield Server()
 
-    @on(Client.DataOut)
-    def send_to_server(self, event: Client.DataOut) -> None:
-        self.query_one(Server).post_message(Server.DataIn(event.data))
+    @on(Device.DataOut)
+    def send_to_server(self, event: Device.DataOut) -> None:
+        if event.sender == self.query_one(Client):
+            target = Server
+        else:
+            target = Client
+        self.query_one(target).post_message(Device.DataIn(event.data))
 
 
 app = TermCharDemo
