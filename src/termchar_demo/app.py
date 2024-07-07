@@ -212,6 +212,10 @@ class TermCharDemo(App[None]):
         self.query_one(target).post_message(Device.DataIn(event.data))
 
 
+def main():
+    TermCharDemo().run()
+
+
 app = TermCharDemo
 if __name__ == "__main__":
-    app().run()
+    main()
