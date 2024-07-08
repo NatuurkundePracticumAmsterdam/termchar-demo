@@ -32,10 +32,14 @@ class Buffer(Label):
             return f"[bright_black]{self.data}[/]"
         elif self.termchars in self.data:
             messages = self.data.split(self.termchars)
+            if (termchars := self.termchars).endswith("\\"):
+                # a backslash just before a markup tag cancels that tag
+                # escape the backslash
+                termchars += "\\"
             data = (
                 "[green]"
-                + f"[/][dark_blue]{self.termchars}[/][green]".join(messages[:-1])
-                + f"[/][dark_blue]{self.termchars}[/][orange1]{messages[-1]}[/]"
+                + f"[/][dark_blue]{termchars}[/][green]".join(messages[:-1])
+                + f"[/][dark_blue]{termchars}[/][orange1]{messages[-1]}[/]"
             )
         else:
             data = f"[orange1]{self.data}[/]"
