@@ -198,7 +198,7 @@ class Device(Container):
 
     @on(DataOut)
     def log_write(self, event: DataOut) -> None:
-        msg = event.data.rstrip(self.query_one("#write-termchars").value)
+        msg = event.data.removesuffix(self.query_one("#write-termchars").value)
         self.query_one("#log").write(f'[light_steel_blue1]> Write → "{msg}"')
 
     @on(DataIn)
