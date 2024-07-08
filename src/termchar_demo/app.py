@@ -1,7 +1,7 @@
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.events import DescendantBlur, Event
+from textual.events import DescendantBlur, Event, Mount
 from textual.reactive import reactive
 from textual.timer import Timer
 from textual.validation import Integer
@@ -204,6 +204,48 @@ class Device(Container):
             self.read()
 
 
+class SimpleDevice(Device):
+    TIMEOUT = 0
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="container"):
+            yield Input(id="output")
+            with Horizontal():
+                yield Input(id="write-termchars")
+                yield Button("Write", id="write-button", variant="primary")
+            yield RichLog(id="log", markup=True)
+            with Horizontal():
+                yield Buffer(id="input-buffer")
+                yield Button("Clear", id="clear-button", variant="primary")
+            with Horizontal():
+                yield Input(
+                    placeholder="Type termination characters here...",
+                    id="read-termchars",
+                )
+                yield Button("Read", id="read-button", variant="primary")
+
+    @on(Mount)
+    def on_mount(self, event: Mount) -> None:
+        event.prevent_default()
+        self.query_one("#input-buffer").border_title = "Input"
+
+    def watch_is_busy_reading(self, is_busy_read: bool) -> None:
+        if is_busy_read:
+            output: Input = self.query_one("#output")
+            output.disabled = True
+            output.placeholder = "Busy reading..."
+            output.add_class("busy")
+            self.query_one("#read-button").disabled = True
+            self.query_one("#read-termchars").disabled = True
+        else:
+            output: Input = self.query_one("#output")
+            output.disabled = False
+            output.placeholder = "Type here to send data"
+            output.remove_class("busy")
+            self.query_one("#read-button").disabled = False
+            self.query_one("#read-termchars").disabled = False
+
+
 class Client(Device):
     BORDER_TITLE: str = "Client"
 
@@ -213,9 +255,38 @@ class Server(Device):
     TIMEOUT = 0
 
     def on_mount(self) -> None:
-        super().on_mount()
         self.query_one("#read-termchars").value = r"\n"
         self.query_one("#write-termchars").value = r"\n\r"
+
+
+class SimpleClient(Client, SimpleDevice): ...
+
+
+class SimpleServer(Server, SimpleDevice):
+    BORDER_TITLE: str = "Server"
+    TIMEOUT = 0
+
+    def on_mount(self) -> None:
+        (widget := self.query_one("#read-termchars")).value = r"\n"
+        widget.disabled = True
+        (widget := self.query_one("#write-termchars")).value = r"\n\r"
+        widget.disabled = True
+        self.query_one("#read-button").disabled = True
+        self.query_one("#write-button").disabled = True
+        self.is_busy_reading = True
+
+    def read(self) -> None:
+        termchars: Input = self.query_one("#read-termchars").value
+        msg = self.query_one("#input-buffer").read(termchars=termchars)
+        if msg is not None:
+            self.post_message(self.MessageRead(msg))
+            termchars: Input = self.query_one("#write-termchars").value
+            self.post_message(
+                self.DataOut(
+                    f"Thank you for your message titled '{msg}'!" + termchars,
+                    sender=self,
+                )
+            )
 
 
 class TermCharDemo(App[None]):
@@ -225,11 +296,11 @@ class TermCharDemo(App[None]):
         yield Header()
         yield Footer()
         with Horizontal():
-            yield Client()
-            yield Server()
+            yield SimpleClient()
+            yield SimpleServer()
 
     @on(Device.DataOut)
-    def send_to_server(self, event: Device.DataOut) -> None:
+    def send_data(self, event: Device.DataOut) -> None:
         if event.sender == self.query_one(Client):
             target = Server
         else:
