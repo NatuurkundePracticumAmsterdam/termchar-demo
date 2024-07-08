@@ -1,3 +1,7 @@
+Tabs .underline--bar {
+    color: $secondary;
+}
+
 Client, Server {
     border: solid $accent;
     border-title-color: $text;

@@ -5,7 +5,7 @@ from textual.events import DescendantBlur, Event, Mount
 from textual.reactive import reactive
 from textual.timer import Timer
 from textual.validation import Integer
-from textual.widgets import Button, Footer, Header, Input, Label, RichLog
+from textual.widgets import Button, Footer, Header, Input, Label, RichLog, TabbedContent
 
 
 class Buffer(Label):
@@ -227,7 +227,10 @@ class SimpleDevice(Device):
     @on(Mount)
     def on_mount(self, event: Mount) -> None:
         event.prevent_default()
+        self.query_one("#write-termchars").border_title = "Write Termination Characters"
+        self.query_one("#log").border_title = "Application Log"
         self.query_one("#input-buffer").border_title = "Input"
+        self.query_one("#read-termchars").border_title = "Read Termination Characters"
 
     def watch_is_busy_reading(self, is_busy_read: bool) -> None:
         if is_busy_read:
@@ -283,21 +286,17 @@ class SimpleServer(Server, SimpleDevice):
             termchars: Input = self.query_one("#write-termchars").value
             self.post_message(
                 self.DataOut(
-                    f"Thank you for your message titled '{msg}'!" + termchars,
+                    f"Thank you, I got '{msg}'!" + termchars,
                     sender=self,
                 )
             )
 
 
-class TermCharDemo(App[None]):
-    CSS_PATH = "app.tcss"
-
+class AdvancedDemo(Container):
     def compose(self) -> ComposeResult:
-        yield Header()
-        yield Footer()
         with Horizontal():
-            yield SimpleClient()
-            yield SimpleServer()
+            yield Client()
+            yield Server()
 
     @on(Device.DataOut)
     def send_data(self, event: Device.DataOut) -> None:
@@ -306,6 +305,24 @@ class TermCharDemo(App[None]):
         else:
             target = Client
         self.query_one(target).post_message(Device.DataIn(event.data))
+
+
+class BasicDemo(AdvancedDemo):
+    def compose(self) -> ComposeResult:
+        with Horizontal():
+            yield SimpleClient()
+            yield SimpleServer()
+
+
+class TermCharDemo(App[None]):
+    CSS_PATH = "app.tcss"
+
+    def compose(self) -> ComposeResult:
+        yield Header()
+        yield Footer()
+        with TabbedContent("Basic Demo", "Advanced Demo"):
+            yield BasicDemo()
+            yield AdvancedDemo()
 
 
 def main():
