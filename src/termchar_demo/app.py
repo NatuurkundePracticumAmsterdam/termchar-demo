@@ -10,15 +10,30 @@ from textual.widgets import Button, Footer, Header, Input, Label, RichLog
 
 class Buffer(Label):
     data = reactive("")
+    termchars = reactive("")
 
-    def __init__(self, data: str = "", length: int = 30, *args, **kwargs) -> None:
+    def __init__(
+        self, data: str = "", length: int = 30, termchars: str = "", *args, **kwargs
+    ) -> None:
         super().__init__(data, *args, **kwargs)
         self.length = length
-        self.data = data
         self.styles.max_width = self.length + 2
+        self.data = data
+        self.termchars = termchars
 
     def render(self) -> str:
-        return self.data
+        if not self.termchars:
+            return f"[bright_black]{self.data}[/]"
+        elif self.termchars in self.data:
+            messages = self.data.split(self.termchars)
+            data = (
+                "[green]"
+                + f"[/][dark_blue]{self.termchars}[/][green]".join(messages[:-1])
+                + f"[/][dark_blue]{self.termchars}[/][orange1]{messages[-1]}[/]"
+            )
+        else:
+            data = f"[orange1]{self.data}[/]"
+        return data
 
     def append(self, new_data: str) -> None:
         self.data = (self.data + new_data)[: self.length]
@@ -148,6 +163,10 @@ class Device(Container):
         self.post_message(self.DataOut(output.value + termchars, sender=self))
         output.clear()
 
+    @on(Input.Changed, "#read-termchars")
+    def update_input_buffer(self, event: Input.Changed) -> None:
+        self.query_one("#input-buffer").termchars = event.input.value
+
     @on(Button.Pressed, "#read-button")
     def read(self) -> None:
         termchars: Input = self.query_one("#read-termchars").value
@@ -190,7 +209,6 @@ class Server(Device):
         super().on_mount()
         self.query_one("#read-termchars").value = r"\n"
         self.query_one("#write-termchars").value = r"\n\r"
-        self.is_busy_reading = True
 
 
 class TermCharDemo(App[None]):
