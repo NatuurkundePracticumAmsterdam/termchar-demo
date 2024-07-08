@@ -262,10 +262,10 @@ class Server(Device):
         self.query_one("#write-termchars").value = r"\n\r"
 
 
-class SimpleClient(Client, SimpleDevice): ...
+class BasicClient(Client, SimpleDevice): ...
 
 
-class SimpleServer(Server, SimpleDevice):
+class BasicServer(Server, SimpleDevice):
     BORDER_TITLE: str = "Server"
     TIMEOUT = 0
 
@@ -310,8 +310,8 @@ class AdvancedDemo(Container):
 class BasicDemo(AdvancedDemo):
     def compose(self) -> ComposeResult:
         with Horizontal():
-            yield SimpleClient()
-            yield SimpleServer()
+            yield BasicClient()
+            yield BasicServer()
 
 
 class TermCharDemo(App[None]):
