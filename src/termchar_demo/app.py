@@ -13,11 +13,17 @@ class Buffer(Label):
     termchars = reactive("")
 
     def __init__(
-        self, data: str = "", length: int = 30, termchars: str = "", *args, **kwargs
+        self,
+        data: str = "",
+        length: int | None = None,
+        termchars: str = "",
+        *args,
+        **kwargs,
     ) -> None:
         super().__init__(data, *args, **kwargs)
         self.length = length
-        self.styles.max_width = self.length + 2
+        if length is not None:
+            self.styles.max_width = self.length + 2
         self.data = data
         self.termchars = termchars
 
@@ -42,13 +48,14 @@ class Buffer(Label):
         self.data = ""
 
     def watch_data(self):
-        fill_factor = len(self.data) / self.length
-        if fill_factor >= 0.8:
-            self.set_classes("full")
-        elif fill_factor >= 0.6:
-            self.set_classes("almost-full")
-        else:
-            self.set_classes("")
+        if self.length is not None:
+            fill_factor = len(self.data) / self.length
+            if fill_factor >= 0.8:
+                self.set_classes("full")
+            elif fill_factor >= 0.6:
+                self.set_classes("almost-full")
+            else:
+                self.set_classes("")
 
     def read(self, termchars: str) -> str | None:
         if not termchars:
@@ -98,7 +105,7 @@ class Device(Container):
                 yield Button("Write", id="write-button", variant="primary")
             yield RichLog(id="log", markup=True)
             with Horizontal():
-                yield Buffer(id="input-buffer")
+                yield Buffer(id="input-buffer", length=30)
                 yield Button("Clear", id="clear-button", variant="primary")
             with Horizontal():
                 yield Input(
