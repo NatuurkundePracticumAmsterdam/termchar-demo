@@ -1,3 +1,4 @@
+from rich.text import Text
 from textual.reactive import reactive
 from textual.widgets import Label
 
@@ -37,7 +38,12 @@ class Buffer(Label):
             )
         else:
             data = f"[orange1]{self.data}[/]"
-        return data.replace(" ", " ")
+        # use non-breaking space to hide background
+        data = data.replace(" ", " ")
+        # truncate label with ellipsis if necessary
+        text = Text.from_markup(data)
+        text.truncate(self.size.width, overflow="ellipsis")
+        return text
 
     def append(self, new_data: str) -> None:
         self.data = (self.data + new_data)[: self.length]
