@@ -33,8 +33,8 @@ class Buffer(Label):
                 termchars += "\\"
             data = (
                 "[green]"
-                + f"[/][dark_blue]{termchars}[/][green]".join(messages[:-1])
-                + f"[/][dark_blue]{termchars}[/][orange1]{messages[-1]}[/]"
+                + f"[/][blue]{termchars}[/][green]".join(messages[:-1])
+                + f"[/][blue]{termchars}[/][orange1]{messages[-1]}[/]"
             )
         else:
             data = f"[orange1]{self.data}[/]"
