@@ -34,28 +34,37 @@ class Device(Container):
     timeout: int
     timeout_timer: Timer | None = None
 
+    def output_widgets(self) -> ComposeResult:
+        yield Input(id="output")
+        with Horizontal():
+            yield Input(id="write-termchars")
+            yield Button("Write", id="write-button", variant="primary")
+
+    def input_widgets(self) -> ComposeResult:
+        with Horizontal():
+            yield Buffer(id="input-buffer", length=30)
+            yield Button("Clear", id="clear-button", variant="primary")
+        with Horizontal():
+            yield Input(
+                placeholder="Type termination characters here...",
+                id="read-termchars",
+            )
+            yield Input(
+                value=str(self.TIMEOUT),
+                id="timeout",
+                restrict="[0-9]*",
+                validators=Integer(minimum=0),
+            )
+            yield Button("Read", id="read-button", variant="primary")
+
+    def log_widget(self) -> ComposeResult:
+        yield RichLog(id="log", markup=True)
+
     def compose(self) -> ComposeResult:
         with Vertical(id="container"):
-            yield Input(id="output")
-            with Horizontal():
-                yield Input(id="write-termchars")
-                yield Button("Write", id="write-button", variant="primary")
-            yield RichLog(id="log", markup=True)
-            with Horizontal():
-                yield Buffer(id="input-buffer", length=30)
-                yield Button("Clear", id="clear-button", variant="primary")
-            with Horizontal():
-                yield Input(
-                    placeholder="Type termination characters here...",
-                    id="read-termchars",
-                )
-                yield Input(
-                    value=str(self.TIMEOUT),
-                    id="timeout",
-                    restrict="[0-9]*",
-                    validators=Integer(minimum=0),
-                )
-                yield Button("Read", id="read-button", variant="primary")
+            yield from self.output_widgets()
+            yield from self.log_widget()
+            yield from self.input_widgets()
 
     def on_mount(self) -> None:
         self.query_one("#write-termchars").border_title = "Write Termination Characters"
@@ -145,22 +154,22 @@ class Device(Container):
 class SimpleDevice(Device):
     TIMEOUT = 0
 
+    def input_widgets(self) -> ComposeResult:
+        with Horizontal():
+            yield Buffer(id="input-buffer")
+            yield Button("Clear", id="clear-button", variant="primary")
+        with Horizontal():
+            yield Input(
+                placeholder="Type termination characters here...",
+                id="read-termchars",
+            )
+            yield Button("Read", id="read-button", variant="primary")
+
     def compose(self) -> ComposeResult:
         with Vertical(id="container"):
-            yield Input(id="output")
-            with Horizontal():
-                yield Input(id="write-termchars")
-                yield Button("Write", id="write-button", variant="primary")
-            yield RichLog(id="log", markup=True)
-            with Horizontal():
-                yield Buffer(id="input-buffer")
-                yield Button("Clear", id="clear-button", variant="primary")
-            with Horizontal():
-                yield Input(
-                    placeholder="Type termination characters here...",
-                    id="read-termchars",
-                )
-                yield Button("Read", id="read-button", variant="primary")
+            yield from self.output_widgets()
+            yield from self.log_widget()
+            yield from self.input_widgets()
 
     @on(Mount)
     def on_mount(self, event: Mount) -> None:

@@ -1,5 +1,5 @@
 from textual.app import ComposeResult
-from textual.containers import Horizontal
+from textual.containers import Horizontal, Vertical
 from textual.widgets import Input
 
 from termchar_demo.advanced_demo import AdvancedDemo, Client, Server
@@ -30,7 +30,7 @@ class BasicServer(Server, SimpleDevice):
             termchars: Input = self.query_one("#write-termchars").value
             self.post_message(
                 self.DataOut(
-                    f"Thank you, I got '{msg}'!" + termchars,
+                    f"I got '{msg}'!" + termchars,
                     sender=self,
                 )
             )

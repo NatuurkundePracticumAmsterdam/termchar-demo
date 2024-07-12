@@ -1,6 +1,6 @@
 from textual import on
 from textual.app import ComposeResult
-from textual.containers import Container, Horizontal
+from textual.containers import Container, Horizontal, Vertical
 
 from termchar_demo.devices import Device
 
@@ -12,6 +12,12 @@ class Client(Device):
 class Server(Device):
     BORDER_TITLE: str = "Server"
     TIMEOUT = 0
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="container"):
+            yield from self.input_widgets()
+            yield from self.log_widget()
+            yield from self.output_widgets()
 
     def on_mount(self) -> None:
         self.query_one("#read-termchars").value = r"\n"
