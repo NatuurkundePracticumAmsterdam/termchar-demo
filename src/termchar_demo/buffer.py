@@ -23,7 +23,7 @@ class Buffer(Label):
 
     def render(self) -> str:
         if not self.termchars:
-            return f"[bright_black]{self.data}[/]"
+            data = f"[bright_black]{self.data}[/]"
         elif self.termchars in self.data:
             messages = self.data.split(self.termchars)
             if (termchars := self.termchars).endswith("\\"):
@@ -37,7 +37,7 @@ class Buffer(Label):
             )
         else:
             data = f"[orange1]{self.data}[/]"
-        return data
+        return data.replace(" ", " ")
 
     def append(self, new_data: str) -> None:
         self.data = (self.data + new_data)[: self.length]
