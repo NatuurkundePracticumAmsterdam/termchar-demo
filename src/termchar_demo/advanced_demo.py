@@ -2,6 +2,7 @@ from textual import on
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 
+from termchar_demo.arrows import Arrows
 from termchar_demo.devices import Device
 
 
@@ -28,6 +29,7 @@ class AdvancedDemo(Container):
     def compose(self) -> ComposeResult:
         with Horizontal():
             yield Client()
+            yield Arrows()
             yield Server()
 
     @on(Device.DataOut)

@@ -1,8 +1,9 @@
 from textual.app import ComposeResult
-from textual.containers import Horizontal, Vertical
+from textual.containers import Horizontal
 from textual.widgets import Input
 
 from termchar_demo.advanced_demo import AdvancedDemo, Client, Server
+from termchar_demo.arrows import Arrows
 from termchar_demo.devices import SimpleDevice
 
 
@@ -40,4 +41,5 @@ class BasicDemo(AdvancedDemo):
     def compose(self) -> ComposeResult:
         with Horizontal():
             yield BasicClient()
+            yield Arrows()
             yield BasicServer()

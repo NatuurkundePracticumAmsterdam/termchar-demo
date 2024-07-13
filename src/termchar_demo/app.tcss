@@ -6,9 +6,23 @@ Client, Server {
     border: solid $accent;
     border-title-color: $text;
     border-title-style: bold;
+    width: 1fr;
 
     & Horizontal {
         height: auto;
+    }
+}
+
+Arrows {
+    width: 10;
+    color: silver;
+
+    & #right {
+        offset-y: 2;
+    }
+    & #left {
+        dock: bottom;
+        offset-y: -5;
     }
 }
 
