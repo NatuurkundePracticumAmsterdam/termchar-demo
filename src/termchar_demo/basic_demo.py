@@ -17,7 +17,7 @@ class BasicServer(Server, SimpleDevice):
     def on_mount(self) -> None:
         (widget := self.query_one("#read-termchars")).value = r"\n"
         widget.disabled = True
-        (widget := self.query_one("#write-termchars")).value = r"\n\r"
+        (widget := self.query_one("#write-termchars")).value = r"\r\n"
         widget.disabled = True
         self.query_one("#read-button").disabled = True
         self.query_one("#write-button").disabled = True

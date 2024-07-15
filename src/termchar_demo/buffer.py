@@ -24,7 +24,7 @@ class Buffer(Label):
 
     def render(self) -> str:
         if not self.termchars:
-            data = f"[bright_black]{self.data}[/]"
+            data = f"[red]{self.data}[/]"
         elif self.termchars in self.data:
             messages = self.data.split(self.termchars)
             if (termchars := self.termchars).endswith("\\"):

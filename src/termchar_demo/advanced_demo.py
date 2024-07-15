@@ -22,7 +22,7 @@ class Server(Device):
 
     def on_mount(self) -> None:
         self.query_one("#read-termchars").value = r"\n"
-        self.query_one("#write-termchars").value = r"\n\r"
+        self.query_one("#write-termchars").value = r"\r\n"
 
 
 class AdvancedDemo(Container):
