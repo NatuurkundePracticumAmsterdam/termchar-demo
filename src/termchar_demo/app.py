@@ -3,7 +3,7 @@ import webbrowser
 
 from textual import on
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Markdown, TabbedContent
+from textual.widgets import Footer, Header, Markdown, TabbedContent, TabPane
 
 from termchar_demo.advanced_demo import AdvancedDemo
 from termchar_demo.basic_demo import BasicDemo
@@ -12,19 +12,40 @@ from termchar_demo.basic_demo import BasicDemo
 class TermCharDemo(App[None]):
     CSS_PATH = "app.tcss"
 
+    BINDINGS = [
+        ("ctrl+c", "quit", "Quit"),
+        ("ctrl+j", "intro", "Introduction"),
+        ("ctrl+b", "basic", "Basic"),
+        ("ctrl+a", "advanced", "Advanced"),
+    ]
+
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        with TabbedContent("Introduction", "Basic", "Advanced"):
-            yield Markdown(
-                (importlib.resources.files("termchar_demo") / "intro.md").read_text()
-            )
-            yield BasicDemo()
-            yield AdvancedDemo()
+        with TabbedContent():
+            with TabPane("Introduction", id="intro"):
+                yield Markdown(
+                    (
+                        importlib.resources.files("termchar_demo") / "intro.md"
+                    ).read_text()
+                )
+            with TabPane("Basic", id="basic"):
+                yield BasicDemo()
+            with TabPane("Advanced", id="advanced"):
+                yield AdvancedDemo()
 
     @on(Markdown.LinkClicked)
     def open_web_link(self, event: Markdown.LinkClicked) -> None:
         webbrowser.open(event.href)
+
+    def action_intro(self) -> None:
+        self.query_one(TabbedContent).active = "intro"
+
+    def action_basic(self) -> None:
+        self.query_one(TabbedContent).active = "basic"
+
+    def action_advanced(self) -> None:
+        self.query_one(TabbedContent).active = "advanced"
 
 
 def main():
