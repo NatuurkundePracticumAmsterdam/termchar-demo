@@ -30,6 +30,12 @@ class TermCharDemo(App[None]):
                 yield BasicDemo()
             with TabPane("Advanced", id="advanced"):
                 yield AdvancedDemo()
+            with TabPane("Background", id="background"):
+                yield Markdown(
+                    (
+                        importlib.resources.files("termchar_demo") / "background.md"
+                    ).read_text()
+                )
 
     @on(Markdown.LinkClicked)
     def open_web_link(self, event: Markdown.LinkClicked) -> None:
