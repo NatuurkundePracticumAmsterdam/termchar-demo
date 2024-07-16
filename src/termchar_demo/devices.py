@@ -81,7 +81,7 @@ class Device(Container):
         if is_busy_read:
             output: Input = self.query_one("#output")
             output.disabled = True
-            output.placeholder = "Busy reading..."
+            output.placeholder = "Waiting for message..."
             output.add_class("busy")
             self.query_one("#read-button").disabled = True
             self.query_one("#read-termchars").disabled = True

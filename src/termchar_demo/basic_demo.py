@@ -1,3 +1,5 @@
+from random import choice
+
 from textual.app import ComposeResult
 from textual.containers import Horizontal
 from textual.widgets import Input
@@ -5,6 +7,19 @@ from textual.widgets import Input
 from termchar_demo.advanced_demo import AdvancedDemo, Client, Server
 from termchar_demo.arrows import Arrows
 from termchar_demo.devices import SimpleDevice
+
+REPLIES = [
+    "Got it, thanks!",
+    "Received, thanks!",
+    "Thanks, noted.",
+    "Understood, thanks!",
+    "Acknowledged.",
+    "Thanks, will do.",
+    "Got it.",
+    "Noted.",
+    "Copy that.",
+    "Received.",
+]
 
 
 class BasicClient(Client, SimpleDevice): ...
@@ -31,7 +46,7 @@ class BasicServer(Server, SimpleDevice):
             termchars: Input = self.query_one("#write-termchars").value
             self.post_message(
                 self.DataOut(
-                    f"I got '{msg}'!" + termchars,
+                    choice(REPLIES) + termchars,
                     sender=self,
                 )
             )
