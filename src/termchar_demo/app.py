@@ -14,9 +14,6 @@ class TermCharDemo(App[None]):
 
     BINDINGS = [
         ("ctrl+c", "quit", "Quit"),
-        ("ctrl+j", "intro", "Introduction"),
-        ("ctrl+b", "basic", "Basic"),
-        ("ctrl+a", "advanced", "Advanced"),
     ]
 
     def compose(self) -> ComposeResult:
