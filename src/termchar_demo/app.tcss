@@ -17,6 +17,10 @@ Arrows {
     width: 10;
     color: silver;
 
+    & .active {
+        color: red;
+    }
+
     & #right {
         offset-y: 2;
     }

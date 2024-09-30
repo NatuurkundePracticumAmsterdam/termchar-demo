@@ -1,5 +1,7 @@
+import asyncio
 from random import choice
 
+from textual import on
 from textual.app import ComposeResult
 from textual.containers import Horizontal
 from textual.widgets import Input
@@ -22,7 +24,11 @@ REPLIES = [
 ]
 
 
-class BasicClient(Client, SimpleDevice): ...
+class BasicClient(Client, SimpleDevice):
+    @on(Client.DataOut)
+    def disable_inputs(self) -> None:
+        self.query_one("#output").disabled = True
+        # self.query_one("#write-termchars").disabled = True
 
 
 class BasicServer(Server, SimpleDevice):
@@ -58,3 +64,21 @@ class BasicDemo(AdvancedDemo):
             yield BasicClient()
             yield Arrows()
             yield BasicServer()
+
+    @on(SimpleDevice.DataOut)
+    def send_data(self, event: SimpleDevice.DataOut) -> None:
+        event.prevent_default()
+        if event.sender == self.query_one(Client):
+            target = Server
+            dataflow_target = "#right"
+        else:
+            target = Client
+            dataflow_target = "#left"
+
+        async def callback():
+            arrow = self.query_one(dataflow_target).add_class("active")
+            await asyncio.sleep(1)
+            arrow.remove_class("active")
+            self.query_one(target).post_message(SimpleDevice.DataIn(event.data))
+
+        self.call_later(callback)
