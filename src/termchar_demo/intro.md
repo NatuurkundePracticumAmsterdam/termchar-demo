@@ -6,7 +6,7 @@ Play around for a bit! Some suggestions:
 
 1. Start with the **Basic** demo: the server will autoreply if a complete message is received.
 2. Try to send a message, with or without manually adding termination characters. Which characters are expected by the Server?
-3. Set the termination characters in the _Write Termination Characters_ field. Send some more messages. What happens?
+3. Set the termination characters in the _Write Termination Characters_ field of the client. Send some more messages. What happens?
 4. Try to read messages. Are you required to specify read termination characters?
 5. What happens if you do?
-6. Try the **Advanced** demo. Here, you can operate both client and server. Play around with various settings for the termination characters.
+6. Finally, you can try the **Advanced** demo. Here, you operate both client and server. Play around with various settings for the termination characters and read timeouts. What happens when you try to read, but there is no message yet received?
