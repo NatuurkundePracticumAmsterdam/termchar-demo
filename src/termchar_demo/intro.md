@@ -10,3 +10,4 @@ Play around for a bit! Some suggestions:
 4. Try to read messages. Are you required to specify read termination characters?
 5. What happens if you do? Collect at least two replies and try to read them one by one.
 6. Finally, you can try the **Advanced** demo. Here, you operate both client and server. Play around with various settings for the termination characters and read timeouts. What happens when you try to read, but there is no message yet received?
+7. In the advanced demo, buffers have a finite size. If you try to overflow them, what happens?
