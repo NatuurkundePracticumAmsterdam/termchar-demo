@@ -63,7 +63,10 @@ class BasicServer(Server, SimpleDevice):
                     sender=self,
                 )
             )
-            await asyncio.sleep(3)
+            await asyncio.sleep(DELAY)
+            self.query_one("#output").add_class("active")
+            await asyncio.sleep(DELAY)
+            self.query_one("#output").remove_class("active")
 
 
 class BasicDemo(AdvancedDemo):

@@ -61,19 +61,19 @@ Button {
     border: tall $secondary;
 }
 
-#output.busy {
-    opacity: 100%;
-    & .input--placeholder {
-        color: $secondary;
-        text-style: bold;
-    }
-}
-
 BasicServer #output.busy {
     opacity: 100%;
     & .input--placeholder {
         color: $text-disabled;
         text-style: none;
+    }
+}
+
+#output.busy, BasicServer #output.active {
+    opacity: 100%;
+    & .input--placeholder {
+        color: $secondary;
+        text-style: bold;
     }
 }
 
