@@ -1,7 +1,7 @@
 import asyncio
 from random import choice
 
-from textual import on
+from textual import on, work
 from textual.app import ComposeResult
 from textual.containers import Horizontal
 from textual.widgets import Input
@@ -23,12 +23,15 @@ REPLIES = [
     "Received.",
 ]
 
+DELAY = 1.0
+
 
 class BasicClient(Client, SimpleDevice):
-    @on(Client.DataOut)
-    def disable_inputs(self) -> None:
-        self.query_one("#output").disabled = True
-        # self.query_one("#write-termchars").disabled = True
+    ...
+    # @on(Client.DataOut)
+    # def disable_inputs(self) -> None:
+    #     self.query_one("#output").disabled = True
+    #     self.query_one("#write-termchars").disabled = True
 
 
 class BasicServer(Server, SimpleDevice):
@@ -45,10 +48,16 @@ class BasicServer(Server, SimpleDevice):
         self.is_busy_reading = True
 
     def read(self) -> None:
+        self.myworker()
+
+    @work
+    async def myworker(self):
+        await asyncio.sleep(DELAY)
         termchars: Input = self.query_one("#read-termchars").value
         msg = self.query_one("#input-buffer").read(termchars=termchars)
         if msg is not None:
             self.post_message(self.MessageRead(msg))
+            await asyncio.sleep(DELAY)
             termchars: Input = self.query_one("#write-termchars").value
             self.post_message(
                 self.DataOut(
@@ -56,6 +65,7 @@ class BasicServer(Server, SimpleDevice):
                     sender=self,
                 )
             )
+            await asyncio.sleep(3)
 
 
 class BasicDemo(AdvancedDemo):
@@ -74,11 +84,14 @@ class BasicDemo(AdvancedDemo):
         else:
             target = Client
             dataflow_target = "#left"
+        self.animate_send_data(event.data, target, dataflow_target)
 
-        async def callback():
-            arrow = self.query_one(dataflow_target).add_class("active")
-            await asyncio.sleep(1)
-            arrow.remove_class("active")
-            self.query_one(target).post_message(SimpleDevice.DataIn(event.data))
-
-        self.call_later(callback)
+    @work
+    async def animate_send_data(
+        self, data: str, data_target: SimpleDevice, dataflow_target: str
+    ) -> None:
+        await asyncio.sleep(DELAY)
+        arrow = self.query_one(dataflow_target).add_class("active")
+        await asyncio.sleep(DELAY)
+        arrow.remove_class("active")
+        self.query_one(data_target).post_message(SimpleDevice.DataIn(data))
