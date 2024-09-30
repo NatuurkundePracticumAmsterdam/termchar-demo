@@ -8,5 +8,5 @@ Play around for a bit! Some suggestions:
 2. Try to send a message, with or without manually adding termination characters. Which characters are expected by the Server?
 3. Set the termination characters in the _Write Termination Characters_ field of the client. Send some more messages. What happens?
 4. Try to read messages. Are you required to specify read termination characters?
-5. What happens if you do?
+5. What happens if you do? Collect at least two replies and try to read them one by one.
 6. Finally, you can try the **Advanced** demo. Here, you operate both client and server. Play around with various settings for the termination characters and read timeouts. What happens when you try to read, but there is no message yet received?
