@@ -15,11 +15,7 @@ Client, Server {
 
 Arrows {
     width: 10;
-    color: silver;
-
-    & .active {
-        color: red;
-    }
+    color: $primary-lighten-3;
 
     & #right {
         offset-y: 2;
@@ -32,6 +28,10 @@ Arrows {
 
 Button {
     border: tall $surface;
+}
+
+.active {
+    color: $secondary;
 }
 
 #input-buffer {
@@ -66,6 +66,14 @@ Button {
     & .input--placeholder {
         color: $secondary;
         text-style: bold;
+    }
+}
+
+BasicServer #output.busy {
+    opacity: 100%;
+    & .input--placeholder {
+        color: $text-disabled;
+        text-style: none;
     }
 }
 

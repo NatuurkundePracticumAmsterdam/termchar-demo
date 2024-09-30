@@ -183,7 +183,7 @@ class SimpleDevice(Device):
         if is_busy_read:
             output: Input = self.query_one("#output")
             output.disabled = True
-            output.placeholder = "Busy reading..."
+            output.placeholder = "Sending auto-replies..."
             output.add_class("busy")
             self.query_one("#read-button").disabled = True
             self.query_one("#read-termchars").disabled = True
