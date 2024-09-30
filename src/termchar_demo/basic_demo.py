@@ -27,11 +27,9 @@ DELAY = 1.0
 
 
 class BasicClient(Client, SimpleDevice):
-    ...
-    # @on(Client.DataOut)
-    # def disable_inputs(self) -> None:
-    #     self.query_one("#output").disabled = True
-    #     self.query_one("#write-termchars").disabled = True
+    @on(Client.DataOut)
+    def focus_write_button(self) -> None:
+        self.query_one("#write-button").focus()
 
 
 class BasicServer(Server, SimpleDevice):
