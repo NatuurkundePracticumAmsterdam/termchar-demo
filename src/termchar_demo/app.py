@@ -1,5 +1,4 @@
 import importlib.resources
-import webbrowser
 
 from textual import on
 from textual.app import App, ComposeResult
@@ -39,7 +38,7 @@ class TermCharDemo(App[None]):
 
     @on(Markdown.LinkClicked)
     def open_web_link(self, event: Markdown.LinkClicked) -> None:
-        webbrowser.open(event.href)
+        self.open_url(event.href)
 
     def action_intro(self) -> None:
         self.query_one(TabbedContent).active = "intro"
