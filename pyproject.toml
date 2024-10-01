@@ -8,11 +8,11 @@ packages = [{ include = "termchar_demo", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-textual = "^0.71.0"
+textual = "^0.81.0"
 
 [tool.poetry.group.dev.dependencies]
-textual-dev = "^1.5.1"
 ruff = "^0.5.1"
+textual-dev = "^1.6.1"
 
 [tool.poetry.scripts]
 tcdemo = "termchar_demo.app:main"
