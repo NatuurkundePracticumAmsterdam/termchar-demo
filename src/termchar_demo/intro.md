@@ -1,6 +1,6 @@
 # Introduction
 
-Welcome to this _termination character demonstration_, a playground to learn about serial communication and ways to mark the end of messages exchanged between computers and serial devices like an Arduino, or instruments like an oscilloscope. In these demos, the _Client_ is your computer and the _Server_ is the external device. **Note:** it is recommended that you make your terminal wide enough to give all widgets some breathing room.
+Welcome to this _termination character demonstration_, a playground to learn about serial communication and ways to mark the end of messages exchanged between computers and serial devices like an Arduino, or instruments like an oscilloscope. In these demos, the _Client_ is your computer and the _Server_ is the external device. **Note:** it is recommended that you make your terminal wide enough to give all widgets some breathing room. This app is written in Python with the ✨awesome✨ [Textual](https://www.textualize.io) framework.
 
 Play around for a bit! Some suggestions:
 
