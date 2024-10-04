@@ -121,6 +121,9 @@ class Device(Container):
         self.query_one("#input-buffer").termchars = event.input.value
 
     @on(Button.Pressed, "#read-button")
+    def perform_read(self) -> None:
+        self.read()
+
     def read(self) -> None:
         termchars: Input = self.query_one("#read-termchars").value
         msg = self.query_one("#input-buffer").read(termchars=termchars)

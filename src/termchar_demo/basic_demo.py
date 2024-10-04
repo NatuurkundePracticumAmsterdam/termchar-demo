@@ -31,6 +31,10 @@ class BasicClient(Client, SimpleDevice):
     def focus_write_button(self) -> None:
         self.query_one("#write-button").focus()
 
+    def read(self) -> None:
+        super().read()
+        self.is_busy_reading = False
+
 
 class BasicServer(Server, SimpleDevice):
     BORDER_TITLE: str = "Server"
