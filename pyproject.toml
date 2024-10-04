@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "termchar-demo"
-version = "0.3.0"
+version = "0.3.0.post1"
 description = "Termination character demo, a playground to learn about serial communication."
 authors = ["David Fokkema <davidfokkema@icloud.com>"]
 license = "MIT"
