@@ -27,6 +27,8 @@ class Device(Container):
             super().__init__()
             self.msg = msg
 
+    BINDINGS = [("ctrl+o", "focus_message", "Focus message")]
+
     BORDER_TITLE: str = "Device"
     TIMEOUT = 2
 
@@ -109,6 +111,7 @@ class Device(Container):
         self.timeout = int(widget.value)
 
     @on(Input.Submitted, "#output")
+    @on(Input.Submitted, "#write-termchars")
     @on(Button.Pressed, "#write-button")
     def write(self) -> None:
         termchars: Input = self.query_one("#write-termchars").value
@@ -120,6 +123,7 @@ class Device(Container):
     def update_input_buffer(self, event: Input.Changed) -> None:
         self.query_one("#input-buffer").termchars = event.input.value
 
+    @on(Input.Submitted, "#read-termchars")
     @on(Button.Pressed, "#read-button")
     def perform_read(self) -> None:
         self.read()
@@ -152,6 +156,9 @@ class Device(Container):
         buffer.append(event.data)
         if self.is_busy_reading:
             self.read()
+
+    def action_focus_message(self) -> None:
+        self.query_one("#output").focus()
 
 
 class SimpleDevice(Device):
