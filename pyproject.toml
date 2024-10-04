@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "termchar-demo"
-version = "0.2.0"
-description = ""
+version = "0.3.0"
+description = "Termination character demo, a playground to learn about serial communication."
 authors = ["David Fokkema <davidfokkema@icloud.com>"]
+license = "MIT"
 readme = "README.md"
 packages = [{ include = "termchar_demo", from = "src" }]
 
