@@ -16,7 +16,7 @@ ruff = "^0.5.1"
 textual-dev = "^1.6.1"
 
 [tool.poetry.scripts]
-tcdemo = "termchar_demo.app:main"
+termchar-demo = "termchar_demo.app:main"
 
 [build-system]
 requires = ["poetry-core"]
